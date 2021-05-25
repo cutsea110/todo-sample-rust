@@ -1,5 +1,3 @@
-extern crate todo;
-
 pub mod mock;
 use mock::service::*;
 
