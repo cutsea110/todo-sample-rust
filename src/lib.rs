@@ -2,7 +2,7 @@ pub mod post {
     pub trait PostDao {
         type NewPost;
         type Post;
-        type PostId;
+        type PostId: Copy;
 
         fn create(&mut self, post: Self::NewPost) -> Option<Self::PostId>;
         fn list_draft(&self) -> &[Self::Post];
