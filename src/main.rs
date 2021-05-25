@@ -37,13 +37,13 @@ pub mod mock {
             type Post = MockPost;
             type PostId = u32;
 
-            fn create(&mut self, post: MockNewPost) -> Option<&u32> {
+            fn create(&mut self, post: MockNewPost) -> Option<u32> {
                 self.id_counter = self.id_counter + 1;
                 self.drafts.push(MockPost {
                     id: self.id_counter,
                     memo: post.memo,
                 });
-                Some(&self.id_counter)
+                Some(self.id_counter)
             }
             fn list_draft(&self) -> &[MockPost] {
                 self.drafts.as_slice()

@@ -4,7 +4,7 @@ pub mod post {
         type Post;
         type PostId;
 
-        fn create(&mut self, post: Self::NewPost) -> Option<&Self::PostId>;
+        fn create(&mut self, post: Self::NewPost) -> Option<Self::PostId>;
         fn list_draft(&self) -> &[Self::Post];
         fn list_published(&self) -> &[Self::Post];
         fn get_by_id(&self, id: Self::PostId) -> Option<&Self::Post>;
@@ -18,7 +18,7 @@ pub mod post {
         fn write_new(
             &mut self,
             post: <<Self as HavePostDao>::PostDao as PostDao>::NewPost,
-        ) -> Option<&<<Self as HavePostDao>::PostDao as PostDao>::PostId> {
+        ) -> Option<<<Self as HavePostDao>::PostDao as PostDao>::PostId> {
             self.post_dao().create(post)
         }
 
