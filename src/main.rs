@@ -37,14 +37,13 @@ pub mod mock {
             type Post = MockPost;
             type PostId = u32;
 
-            fn create(&mut self, post: MockNewPost) -> Option<u32> {
+            fn create(&mut self, post: MockNewPost) -> Option<&u32> {
                 self.id_counter = self.id_counter + 1;
                 self.drafts.push(MockPost {
                     id: self.id_counter,
                     memo: post.memo,
                 });
-                println!("CREATED: {:#?}", self);
-                Some(self.id_counter)
+                Some(&self.id_counter)
             }
             fn list_draft(&self) -> &[MockPost] {
                 self.drafts.as_slice()
@@ -52,12 +51,12 @@ pub mod mock {
             fn list_published(&self) -> &[MockPost] {
                 self.published.as_slice()
             }
-            fn get_by_id(&self, id: Self::PostId) -> Option<MockPost> {
-                self.drafts.clone().into_iter().find(|p| p.id == id).or(self
-                    .published
-                    .clone()
+            fn get_by_id(&self, id: Self::PostId) -> Option<&MockPost> {
+                self.drafts
+                    .as_slice()
                     .into_iter()
-                    .find(|p| p.id == id))
+                    .find(|p| p.id == id)
+                    .or(self.published.as_slice().into_iter().find(|p| p.id == id))
             }
             fn publish(&mut self, id: u32) -> bool {
                 for (i, v) in self.drafts.clone().into_iter().enumerate() {
