@@ -5,8 +5,8 @@ pub mod post {
         type PostId;
 
         fn create(&mut self, post: Self::NewPost) -> Option<Self::PostId>;
-        fn list_draft(&self) -> Vec<Self::Post>;
-        fn list_published(&self) -> Vec<Self::Post>;
+        fn list_draft(&self) -> &[Self::Post];
+        fn list_published(&self) -> &[Self::Post];
         fn get_by_id(&self, id: Self::PostId) -> Option<Self::Post>;
         fn publish(&mut self, id: Self::PostId) -> bool;
     }
@@ -22,11 +22,11 @@ pub mod post {
             self.post_dao().create(post)
         }
 
-        fn list_draft(&mut self) -> Vec<<<Self as HavePostDao>::PostDao as PostDao>::Post> {
+        fn list_draft(&mut self) -> &[<<Self as HavePostDao>::PostDao as PostDao>::Post] {
             self.post_dao().list_draft()
         }
 
-        fn list_published(&mut self) -> Vec<<<Self as HavePostDao>::PostDao as PostDao>::Post> {
+        fn list_published(&mut self) -> &[<<Self as HavePostDao>::PostDao as PostDao>::Post] {
             self.post_dao().list_published()
         }
 

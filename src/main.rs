@@ -46,11 +46,11 @@ pub mod mock {
                 println!("CREATED: {:#?}", self);
                 Some(self.id_counter)
             }
-            fn list_draft(&self) -> Vec<MockPost> {
-                self.drafts.clone()
+            fn list_draft(&self) -> &[MockPost] {
+                self.drafts.as_slice()
             }
-            fn list_published(&self) -> Vec<MockPost> {
-                self.published.clone()
+            fn list_published(&self) -> &[MockPost] {
+                self.published.as_slice()
             }
             fn get_by_id(&self, id: Self::PostId) -> Option<MockPost> {
                 self.drafts.clone().into_iter().find(|p| p.id == id).or(self
