@@ -124,5 +124,17 @@ fn main() {
     });
     println!("{:#?}", pid);
 
+    if let Some(pid) = svc.get_post_by_id(2) {
+        println!("Found: {:#?}", pid);
+    }
+
+    svc.publish(1);
     println!("{:#?}", svc);
+
+    for p in svc.list_draft().into_iter() {
+        println!("{:#?}", p);
+    }
+    for p in svc.list_published().into_iter() {
+        println!("{:#?}", p);
+    }
 }
