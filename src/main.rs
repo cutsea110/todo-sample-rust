@@ -9,7 +9,7 @@ pub mod mock {
         pub struct MockNewPost {
             pub memo: String,
         }
-        #[derive(Debug, Clone)]
+        #[derive(Debug)]
         pub struct MockPost {
             pub id: u32,
             pub memo: String,
@@ -38,7 +38,7 @@ pub mod mock {
             type PostId = u32;
 
             fn create(&mut self, post: MockNewPost) -> Option<u32> {
-                self.id_counter = self.id_counter + 1;
+                self.id_counter += 1;
                 self.drafts.push(MockPost {
                     id: self.id_counter,
                     memo: post.memo,
@@ -59,11 +59,14 @@ pub mod mock {
                     .or(self.published.as_slice().into_iter().find(|p| p.id == id))
             }
             fn publish(&mut self, id: u32) -> bool {
-                for (i, v) in self.drafts.clone().into_iter().enumerate() {
-                    if v.id == id {
-                        self.drafts.remove(i);
+                let mut i = 0;
+                while i != self.drafts.len() {
+                    let x = &self.drafts[i];
+                    if x.id == id {
+                        let v = self.drafts.remove(i);
                         self.published.push(v);
-                        return true;
+                    } else {
+                        i += 1
                     }
                 }
                 false
