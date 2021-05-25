@@ -15,7 +15,7 @@ pub mod mock {
             pub memo: String,
         }
 
-        #[derive(Debug, Clone)]
+        #[derive(Debug)]
         pub struct MockDao {
             id_counter: u32,
             drafts: Vec<MockPost>,
@@ -72,8 +72,8 @@ pub mod mock {
         }
         impl HavePostDao for MockDao {
             type PostDao = MockDao;
-            fn post_dao(&self) -> MockDao {
-                (*self).clone()
+            fn post_dao(&mut self) -> &mut MockDao {
+                self
             }
         }
     }
@@ -82,7 +82,7 @@ pub mod mock {
         pub use super::dao::*;
         pub use todo::post::*;
 
-        #[derive(Debug, Clone)]
+        #[derive(Debug)]
         pub struct MockService {
             post_dao: MockDao,
         }
@@ -95,14 +95,14 @@ pub mod mock {
         }
         impl HavePostDao for MockService {
             type PostDao = MockDao;
-            fn post_dao(&self) -> MockDao {
-                self.post_dao.clone()
+            fn post_dao(&mut self) -> &mut MockDao {
+                &mut self.post_dao
             }
         }
         impl HavePostService for MockService {
             type PostService = Self;
-            fn post_service(&self) -> Self {
-                (*self).clone()
+            fn post_service(&mut self) -> &mut Self {
+                self
             }
         }
     }
@@ -111,11 +111,16 @@ pub mod mock {
 use mock::service::*;
 
 fn main() {
-    let svc = MockService::new();
+    let mut svc = MockService::new();
     println!("{:#?}", svc);
 
     let pid = svc.write_new(MockNewPost {
         memo: "Hello".to_string(),
+    });
+    println!("{:#?}", pid);
+
+    let pid = svc.write_new(MockNewPost {
+        memo: "World".to_string(),
     });
     println!("{:#?}", pid);
 
