@@ -59,14 +59,10 @@ pub mod mock {
                     .or(self.published.as_slice().into_iter().find(|p| p.id == id))
             }
             fn publish(&mut self, id: u32) -> bool {
-                let mut i = 0;
-                while i < self.drafts.len() {
-                    let p = &self.drafts[i];
-                    if p.id == id {
-                        let p_ = self.drafts.remove(i);
-                        self.published.push(p_);
-                    }
-                    i += 1;
+                if let Ok(i) = self.drafts.binary_search_by(|p| p.id.cmp(&id)) {
+                    let v = self.drafts.remove(i);
+                    self.published.push(v);
+                    return true;
                 }
                 false
             }
