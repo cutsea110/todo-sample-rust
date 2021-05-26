@@ -1,32 +1,51 @@
-use futures::TryStreamExt; // try_next()
-use sqlx::postgres::PgPoolOptions;
-use sqlx::prelude::*;
+pub mod psql;
 
-#[derive(Debug, sqlx::FromRow)]
-struct Todos {
-    id: i32,
-    title: String,
-    body: Option<String>,
-    published: bool,
-}
+use anyhow::Result;
+use psql::service::*;
 
 #[async_std::main]
-async fn main() -> Result<(), sqlx::Error> {
-    let conn = PgPoolOptions::new()
-        .max_connections(5)
-        .connect("postgres://admin:admin@localhost:15432/sampledb")
-        .await?;
+async fn main() -> Result<()> {
+    let mut svc = TodoService::new(String::from(
+        "postgres://admin:admin@localhost:15432/sampledb",
+    ))
+    .await?;
 
-    let row: (i64,) = sqlx::query_as("SELECT $1")
-        .bind(150_i64)
-        .fetch_one(&conn)
-        .await?;
-    println!("SELECT: {}", row.0);
+    let pid = svc
+        .write_new(NewTodos {
+            title: "Hello".to_string(),
+            body: Some(
+                "Press this button, and it will be ready for your coffee in no time.".to_string(),
+            ),
+        })
+        .await?
+        .expect("Boon!");
 
-    let mut rows = sqlx::query("SELECT * FROM Todos").fetch(&conn);
-    while let Some(row) = rows.try_next().await? {
-        let title: &str = row.try_get("title")?;
-        println!("TITLE: {}", title);
+    println!("{}", pid);
+
+    let pid = svc
+        .write_new(NewTodos {
+            title: "World".to_string(),
+            body: Some("We'd better hurry!".to_string()),
+        })
+        .await?
+        .expect("Boon!");
+
+    println!("{:?}", pid);
+
+    if let Some(p) = svc.get_post_by_id(pid).await? {
+        println!("Found: {:?}", p);
+    }
+
+    svc.publish(pid).await?;
+
+    println!("DRAFT");
+    for p in svc.list_draft().await?.into_iter() {
+        println!("{:#?}", p);
+    }
+
+    println!("PUBLISHED");
+    for p in svc.list_published().await?.into_iter() {
+        println!("{:#?}", p);
     }
 
     Ok(())

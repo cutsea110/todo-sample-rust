@@ -9,9 +9,9 @@ pub mod post {
         type PostId: Copy + Send;
 
         async fn create(&mut self, post: Self::NewPost) -> Result<Option<Self::PostId>>;
-        async fn list_draft(&self) -> Result<&[Self::Post]>;
-        async fn list_published(&self) -> Result<&[Self::Post]>;
-        async fn get_by_id(&self, id: Self::PostId) -> Result<Option<&Self::Post>>;
+        async fn list_draft(&self) -> Result<Vec<Self::Post>>;
+        async fn list_published(&self) -> Result<Vec<Self::Post>>;
+        async fn get_by_id(&self, id: Self::PostId) -> Result<Option<Self::Post>>;
         async fn publish(&mut self, id: Self::PostId) -> Result<bool>;
     }
     pub trait HavePostDao {
@@ -30,14 +30,14 @@ pub mod post {
 
         async fn list_draft(
             &mut self,
-        ) -> Result<&[<<Self as HavePostDao>::PostDao as PostDao>::Post]> {
+        ) -> Result<Vec<<<Self as HavePostDao>::PostDao as PostDao>::Post>> {
             let v = self.post_dao().list_draft().await?;
             Ok(v)
         }
 
         async fn list_published(
             &mut self,
-        ) -> Result<&[<<Self as HavePostDao>::PostDao as PostDao>::Post]> {
+        ) -> Result<Vec<<<Self as HavePostDao>::PostDao as PostDao>::Post>> {
             let v = self.post_dao().list_published().await?;
             Ok(v)
         }
@@ -45,7 +45,7 @@ pub mod post {
         async fn get_post_by_id(
             &mut self,
             id: <<Self as HavePostDao>::PostDao as PostDao>::PostId,
-        ) -> Result<Option<&<<Self as HavePostDao>::PostDao as PostDao>::Post>> {
+        ) -> Result<Option<<<Self as HavePostDao>::PostDao as PostDao>::Post>> {
             let v = self.post_dao().get_by_id(id).await?;
             Ok(v)
         }
