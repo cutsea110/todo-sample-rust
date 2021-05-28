@@ -20,23 +20,23 @@ pub struct Todos {
 }
 
 #[derive(Debug)]
-pub struct PgTodosDao {
+pub struct PgTodoDao {
     conn: PgPool,
 }
 
-impl PgTodosDao {
+impl PgTodoDao {
     pub async fn new(conn_str: String, conn_max: u32) -> Result<Self> {
         let conn = PgPoolOptions::new()
             .max_connections(conn_max)
             .connect(&conn_str[..])
             .await?;
 
-        Ok(PgTodosDao { conn })
+        Ok(PgTodoDao { conn })
     }
 }
 
 #[async_trait]
-impl PostDao for PgTodosDao {
+impl PostDao for PgTodoDao {
     type NewPost = NewTodos;
     type Post = Todos;
     type PostId = i32;
