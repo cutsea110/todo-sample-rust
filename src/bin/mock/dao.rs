@@ -1,6 +1,6 @@
 use anyhow::Result;
 use async_trait::async_trait;
-use todo::post::*;
+use todo::*;
 
 #[derive(Debug)]
 pub struct MockNewPost {

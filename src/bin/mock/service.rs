@@ -1,5 +1,5 @@
 pub use super::dao::*;
-pub use todo::post::*;
+pub use todo::*;
 
 #[derive(Debug)]
 pub struct MockService {
