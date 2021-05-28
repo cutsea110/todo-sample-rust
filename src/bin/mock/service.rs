@@ -19,9 +19,3 @@ impl HavePostDao for MockService {
         &mut self.post_dao
     }
 }
-impl HavePostService for MockService {
-    type PostService = Self;
-    fn post_service(&mut self) -> &mut Self {
-        self
-    }
-}

@@ -21,9 +21,3 @@ impl HavePostDao for TodoService {
         &mut self.post_dao
     }
 }
-impl HavePostService for TodoService {
-    type PostService = Self;
-    fn post_service(&mut self) -> &mut Self {
-        self
-    }
-}

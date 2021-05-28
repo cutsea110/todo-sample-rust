@@ -68,9 +68,3 @@ impl PostDao for MockDao {
         Ok(false)
     }
 }
-impl HavePostDao for MockDao {
-    type PostDao = MockDao;
-    fn post_dao(&mut self) -> &mut MockDao {
-        self
-    }
-}
