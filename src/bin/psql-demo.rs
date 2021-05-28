@@ -1,7 +1,7 @@
 pub mod psql;
 
 use anyhow::Result;
-use psql::service::*;
+use psql::service::{NewTodos, PostService, TodoService};
 
 #[async_std::main]
 async fn main() -> Result<()> {

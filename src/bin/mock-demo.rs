@@ -1,7 +1,7 @@
 pub mod mock;
 
 use anyhow::Result;
-use mock::service::*;
+use mock::service::{MockNewPost, MockService, PostService};
 
 #[async_std::main]
 async fn main() -> Result<()> {
