@@ -1,16 +1,16 @@
 pub mod mock;
 
 use anyhow::Result;
-use mock::dao::MockNewPost;
-use mock::service::MockService;
-use todo::PostService;
+use mock::dao::MockNewTodo;
+use mock::service;
+use todo::TodoService;
 
 #[async_std::main]
 async fn main() -> Result<()> {
-    let mut svc = MockService::new();
+    let mut svc = service::MockService::new();
 
     let pid = svc
-        .write_new(MockNewPost {
+        .write_new(MockNewTodo {
             memo: "Hello".to_string(),
         })
         .await?
@@ -19,7 +19,7 @@ async fn main() -> Result<()> {
     println!("{:#?}", pid);
 
     let pid = svc
-        .write_new(MockNewPost {
+        .write_new(MockNewTodo {
             memo: "World".to_string(),
         })
         .await?
@@ -27,7 +27,7 @@ async fn main() -> Result<()> {
 
     println!("{:#?}", pid);
 
-    if let Some(pid) = svc.get_post_by_id(2).await? {
+    if let Some(pid) = svc.get_todo_by_id(2).await? {
         println!("Found: {:#?}", pid);
     }
 

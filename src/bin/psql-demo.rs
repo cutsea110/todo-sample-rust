@@ -2,12 +2,12 @@ pub mod psql;
 
 use anyhow::Result;
 use psql::dao::NewTodos;
-use psql::service::TodoService;
-use todo::PostService;
+use psql::service;
+use todo::TodoService;
 
 #[async_std::main]
 async fn main() -> Result<()> {
-    let mut svc = TodoService::new(String::from(
+    let mut svc = service::TodoService::new(String::from(
         "postgres://admin:admin@localhost:15432/sampledb",
     ))
     .await?;
@@ -34,7 +34,7 @@ async fn main() -> Result<()> {
 
     println!("{:?}", pid);
 
-    if let Some(p) = svc.get_post_by_id(pid).await? {
+    if let Some(p) = svc.get_todo_by_id(pid).await? {
         println!("Found: {:?}", p);
     }
 

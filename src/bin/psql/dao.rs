@@ -3,7 +3,7 @@ use async_trait::async_trait;
 use futures::TryStreamExt; // try_next()
 use sqlx::postgres::{PgPool, PgPoolOptions};
 
-use todo::PostDao;
+use todo::TodoDao;
 
 #[derive(Debug)]
 pub struct NewTodos {
@@ -36,16 +36,16 @@ impl PgTodoDao {
 }
 
 #[async_trait]
-impl PostDao for PgTodoDao {
-    type NewPost = NewTodos;
-    type Post = Todos;
-    type PostId = i32;
+impl TodoDao for PgTodoDao {
+    type NewTodo = NewTodos;
+    type Todo = Todos;
+    type TodoId = i32;
 
-    async fn create(&mut self, post: NewTodos) -> Result<Option<i32>> {
+    async fn create(&mut self, todo: NewTodos) -> Result<Option<i32>> {
         let row: (i32,) =
             sqlx::query_as("INSERT INTO todos (title, body) VALUES ($1, $2) RETURNING id")
-                .bind(post.title)
-                .bind(post.body)
+                .bind(todo.title)
+                .bind(todo.body)
                 .fetch_one(&self.conn)
                 .await?;
 

@@ -1,21 +1,21 @@
 use super::dao::MockDao;
-use todo::HavePostDao;
+use todo::HaveTodoDao;
 
 #[derive(Debug)]
 pub struct MockService {
-    post_dao: MockDao,
+    todo_dao: MockDao,
 }
 
 impl MockService {
     pub fn new() -> Self {
         MockService {
-            post_dao: MockDao::new(),
+            todo_dao: MockDao::new(),
         }
     }
 }
-impl HavePostDao for MockService {
-    type PostDao = MockDao;
-    fn post_dao(&mut self) -> &mut MockDao {
-        &mut self.post_dao
+impl HaveTodoDao for MockService {
+    type TodoDao = MockDao;
+    fn todo_dao(&mut self) -> &mut MockDao {
+        &mut self.todo_dao
     }
 }

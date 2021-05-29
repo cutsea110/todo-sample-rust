@@ -2,67 +2,67 @@ use anyhow::Result;
 use async_trait::async_trait;
 
 #[async_trait]
-pub trait PostDao {
-    type NewPost: Send;
-    type Post: Send;
-    type PostId: Copy + Send;
+pub trait TodoDao {
+    type NewTodo: Send;
+    type Todo: Send;
+    type TodoId: Copy + Send;
 
-    async fn create(&mut self, post: Self::NewPost) -> Result<Option<Self::PostId>>;
-    async fn list_draft(&self) -> Result<Vec<Self::Post>>;
-    async fn list_published(&self) -> Result<Vec<Self::Post>>;
-    async fn get_by_id(&self, id: Self::PostId) -> Result<Option<Self::Post>>;
-    async fn publish(&mut self, id: Self::PostId) -> Result<bool>;
+    async fn create(&mut self, todo: Self::NewTodo) -> Result<Option<Self::TodoId>>;
+    async fn list_draft(&self) -> Result<Vec<Self::Todo>>;
+    async fn list_published(&self) -> Result<Vec<Self::Todo>>;
+    async fn get_by_id(&self, id: Self::TodoId) -> Result<Option<Self::Todo>>;
+    async fn publish(&mut self, id: Self::TodoId) -> Result<bool>;
 }
-pub trait HavePostDao {
-    type PostDao: PostDao + Sync + Send;
-    fn post_dao(&mut self) -> &mut Self::PostDao;
+pub trait HaveTodoDao {
+    type TodoDao: TodoDao + Sync + Send;
+    fn todo_dao(&mut self) -> &mut Self::TodoDao;
 }
 #[async_trait]
-pub trait PostService: HavePostDao {
+pub trait TodoService: HaveTodoDao {
     async fn write_new(
         &mut self,
-        post: <<Self as HavePostDao>::PostDao as PostDao>::NewPost,
-    ) -> Result<Option<<<Self as HavePostDao>::PostDao as PostDao>::PostId>> {
-        let v = self.post_dao().create(post).await?;
+        todo: <<Self as HaveTodoDao>::TodoDao as TodoDao>::NewTodo,
+    ) -> Result<Option<<<Self as HaveTodoDao>::TodoDao as TodoDao>::TodoId>> {
+        let v = self.todo_dao().create(todo).await?;
         Ok(v)
     }
 
     async fn list_draft(
         &mut self,
-    ) -> Result<Vec<<<Self as HavePostDao>::PostDao as PostDao>::Post>> {
-        let v = self.post_dao().list_draft().await?;
+    ) -> Result<Vec<<<Self as HaveTodoDao>::TodoDao as TodoDao>::Todo>> {
+        let v = self.todo_dao().list_draft().await?;
         Ok(v)
     }
 
     async fn list_published(
         &mut self,
-    ) -> Result<Vec<<<Self as HavePostDao>::PostDao as PostDao>::Post>> {
-        let v = self.post_dao().list_published().await?;
+    ) -> Result<Vec<<<Self as HaveTodoDao>::TodoDao as TodoDao>::Todo>> {
+        let v = self.todo_dao().list_published().await?;
         Ok(v)
     }
 
-    async fn get_post_by_id(
+    async fn get_todo_by_id(
         &mut self,
-        id: <<Self as HavePostDao>::PostDao as PostDao>::PostId,
-    ) -> Result<Option<<<Self as HavePostDao>::PostDao as PostDao>::Post>> {
-        let v = self.post_dao().get_by_id(id).await?;
+        id: <<Self as HaveTodoDao>::TodoDao as TodoDao>::TodoId,
+    ) -> Result<Option<<<Self as HaveTodoDao>::TodoDao as TodoDao>::Todo>> {
+        let v = self.todo_dao().get_by_id(id).await?;
         Ok(v)
     }
 
     async fn publish(
         &mut self,
-        id: <<Self as HavePostDao>::PostDao as PostDao>::PostId,
+        id: <<Self as HaveTodoDao>::TodoDao as TodoDao>::TodoId,
     ) -> Result<bool> {
-        let v = self.post_dao().publish(id).await?;
+        let v = self.todo_dao().publish(id).await?;
         Ok(v)
     }
 }
 
-impl<T: HavePostDao> PostService for T {}
+impl<T: HaveTodoDao> TodoService for T {}
 
-pub trait HavePostService {
-    type PostService: PostService;
-    fn post_service(&mut self) -> &mut Self::PostService;
+pub trait HaveTodoService {
+    type TodoService: TodoService;
+    fn todo_service(&mut self) -> &mut Self::TodoService;
 }
 
 #[cfg(test)]
