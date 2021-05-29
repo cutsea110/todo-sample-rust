@@ -1,7 +1,7 @@
 use anyhow::Result;
 
-pub use super::dao::*;
-pub use todo::*;
+use super::dao::PgTodoDao;
+use todo::HavePostDao;
 
 #[derive(Debug)]
 pub struct TodoService {

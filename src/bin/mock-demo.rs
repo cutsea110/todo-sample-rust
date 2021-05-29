@@ -1,7 +1,9 @@
 pub mod mock;
 
 use anyhow::Result;
-use mock::service::{MockNewPost, MockService, PostService};
+use mock::dao::MockNewPost;
+use mock::service::MockService;
+use todo::PostService;
 
 #[async_std::main]
 async fn main() -> Result<()> {

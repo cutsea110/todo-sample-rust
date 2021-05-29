@@ -3,7 +3,7 @@ use async_trait::async_trait;
 use futures::TryStreamExt; // try_next()
 use sqlx::postgres::{PgPool, PgPoolOptions};
 
-use todo::*;
+use todo::PostDao;
 
 #[derive(Debug)]
 pub struct NewTodos {
